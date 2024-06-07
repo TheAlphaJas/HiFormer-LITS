@@ -74,4 +74,47 @@ if __name__ == "__main__":
 
 
     model = HiFormer(config=CONFIGS[args.model_name], img_size=args.img_size, n_classes=args.num_classes).cuda()
+    def random_split_array(data, ratios=(0.8, 0.1, 0.1)):
+      np.random.shuffle(data)  # Shuffle for randomness
+      split_indices = np.cumsum(ratios[:-1]) * len(data)
+      return np.split(data, split_indices.astype(int))
+
+#Train-test-val split
+    original = []
+    for i in range(131) :
+      original.append(i)
+
+    train, test, val = random_split_array(original,(0.8,0.1,0.1))
+    print(train)
+    print(test)
+    print(val)
+#These arrays will contain paths of images, and liver mask
+    X_train = []
+    Y_train = []
+    X_test = []
+    Y_test = []
+    X_val = []
+    Y_val = []
+
+    scan_list = os.listdir("//kaggle/working/Task03_Liver")
+    scan_list.sort()
+    for i in scan_list:
+      num = int(i.split("_")[-1])
+      path = "/kaggle/working/Task03_Liver/" + i
+      imgpath = path + "/images"
+      maskpath = path + "/masks"
+      piclist = os.listdir(imgpath)
+      if num in train:
+        for j in piclist:
+            X_train.append(imgpath + "/" + j)
+            Y_train.append(maskpath + "/liver/" +j)
+      elif num in test:
+        for j in piclist:
+            X_test.append(imgpath + "/" + j)
+            Y_test.append(maskpath + "/liver/" +j)
+      else:
+        for j in piclist:
+            X_val.append(imgpath + "/" + j)
+            Y_val.append(maskpath + "/liver/" +j)
+            
     trainer(args, model, args.output_dir, XTest, YTest, XTrain, YTrain)
