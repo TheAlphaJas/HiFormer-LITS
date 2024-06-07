@@ -6,7 +6,9 @@ import torch
 from scipy import ndimage
 from scipy.ndimage.interpolation import zoom
 from torch.utils.data import Dataset
-
+from torchvision.io import read_image
+import torchvision.transforms as transforms
+import torchvision.transforms.functional as F
 
 def random_rot_flip(image, label):
     k = np.random.randint(0, 4)
@@ -72,4 +74,41 @@ class Synapse_dataset(Dataset):
         if self.transform:
             sample = self.transform(sample)
         sample['case_name'] = self.sample_list[idx].strip('\n')
+        return sample
+    
+class RandomRotationTransform:
+    def __init__(self, degrees=(0, 180), size=(224,224)):
+        self.degrees = degrees
+        self.size = (224,224)
+        
+    def __call__(self, image, mask):
+        image = transforms.functional.resize(image, self.size)
+        mask = transforms.functional.resize(mask, self.size)
+        angle = random.uniform(self.degrees[0], self.degrees[1])
+        image = F.rotate(image, angle)
+        mask = F.rotate(mask, angle)
+        return image, mask
+
+def augfun(image, mask):
+    angle = random.uniform(0, 180)
+    rotate_transform = transforms.RandomRotation(degrees=(0, 180))
+    image = transforms.functional.rotate(image, angle)
+    mask = transforms.functional.rotate(mask, angle)
+    return image, mask
+
+class LITSDataset(Dataset):
+    def __init__(self,Xlist,Ylist,transform):
+        self.xlist = Xlist
+        self.ylist = Ylist
+        self.transform = transform
+    def __len__(self):
+        return len(self.xlist)
+    def __getitem__(self,idx):
+        img = read_image(self.xlist[idx]).float()
+        img=img/255.0
+        mask = read_image(self.ylist[idx]).to(torch.int64)
+        mask = mask/255
+        if (self.transform):
+            img,mask = self.transform(img,mask)
+        sample = {'image': img, 'label': mask[0]}
         return sample

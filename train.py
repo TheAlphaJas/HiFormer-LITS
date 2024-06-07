@@ -15,12 +15,8 @@ parser.add_argument('--root_path', type=str,
                     default='./data/Synapse/train_npz', help='root dir for data')
 parser.add_argument('--test_path', type=str,
                     default='./data/Synapse/test_vol_h5', help='root dir for data')
-parser.add_argument('--dataset', type=str,
-                    default='Synapse', help='experiment_name')
-parser.add_argument('--list_dir', type=str,
-                    default='./lists/lists_Synapse', help='list dir')
 parser.add_argument('--num_classes', type=int,
-                    default=9, help='output channel of network')
+                    default=2, help='output channel of network')
 parser.add_argument('--max_iterations', type=int,
                     default=30000, help='maximum epoch number to train')
 parser.add_argument('--max_epochs', type=int,
@@ -78,4 +74,4 @@ if __name__ == "__main__":
 
 
     model = HiFormer(config=CONFIGS[args.model_name], img_size=args.img_size, n_classes=args.num_classes).cuda()
-    trainer(args, model, args.output_dir)
+    trainer(args, model, args.output_dir, XTest, YTest, XTrain, YTrain)

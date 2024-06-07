@@ -11,12 +11,11 @@ from torch.nn.modules.loss import CrossEntropyLoss
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 from utils import DiceLoss, test_single_volume
-from torchvision import transforms
 import matplotlib.pyplot as plt
 import pandas as pd
 import datetime
 
-from datasets.dataset_synapse import Synapse_dataset, RandomGenerator
+from datasets.dataset_synapse import RandomRotationTransform, LITSDataset
 
 
 def inference(model, testloader, args, test_save_path=None):
@@ -66,7 +65,7 @@ def plot_result(dice, h, snapshot_path,args):
     df.to_csv(save_mode_path, sep='\t')
 
 
-def trainer(args, model, snapshot_path):
+def trainer(args, model, snapshot_path, X_train, Y_train, X_test, Y_test):
     date_and_time = datetime.datetime.now()
 
     os.makedirs(os.path.join(snapshot_path, 'test'), exist_ok=True)
@@ -80,13 +79,8 @@ def trainer(args, model, snapshot_path):
     base_lr = args.base_lr
     num_classes = args.num_classes
     batch_size = args.batch_size * args.n_gpu
-
-    db_train = Synapse_dataset(base_dir=args.root_path, list_dir=args.list_dir, split="train",
-                               transform=transforms.Compose(
-                                   [RandomGenerator(output_size=[args.img_size, args.img_size])]))
-    
-    
-    db_test = Synapse_dataset(base_dir=args.test_path, split="test_vol", list_dir=args.list_dir)
+    db_train = LITSDataset(X_train,Y_train,transform=RandomRotationTransform(degrees=(0, 180)))    
+    db_test = LITSDataset(X_test,Y_test,transform=None)
     testloader = DataLoader(db_test, batch_size=1, shuffle=False, num_workers=1)
 
     print("The length of train set is: {}".format(len(db_train)))
@@ -127,7 +121,7 @@ def trainer(args, model, snapshot_path):
 
             outputs = model(image_batch)
             loss_ce = ce_loss(outputs, label_batch[:].long())
-            loss_dice = dice_loss(outputs, label_batch, softmax=True)
+            loss_dice = dice_loss(outputs, label_batch, softmax=False)
             loss = 0.4 * loss_ce + 0.6 * loss_dice
             optimizer.zero_grad()
             loss.backward()
@@ -158,6 +152,7 @@ def trainer(args, model, snapshot_path):
         
         # Test
         if (epoch_num + 1) % args.eval_interval == 0:
+            print("TESTING NOW!!!!")
             filename = f'{args.model_name}_epoch_{epoch_num}.pth'
             save_mode_path = os.path.join(snapshot_path, filename)
             torch.save(model.state_dict(), save_mode_path)
