@@ -16,6 +16,7 @@ This code has been implemented in Python using Pytorch library and tested in ubu
 
 ## Prepare data, Train/Test
 [ALERT: THE FOLLOWING IS FROM THE ORIGINAL REPO. TO BE UPDATED SOON]
+
 Please go to ["Instructions.ipynb"](https://github.com/amirhossein-kz/HiFormer/blob/main/Instructions.ipynb) for complete detail on dataset preparation and Train/Test procedure or follow the instructions below. [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirhossein-kz//HiFormer/blob/main/Instructions.ipynb)
 
 
@@ -52,7 +53,14 @@ Please go to ["Instructions.ipynb"](https://github.com/amirhossein-kz/HiFormer/b
 
 
 ## Query
-All implementations are done by Amirhossein Kazerouni, Milad Soltany and Moein Heidari. For any query, please contact us for more information.
+
+The LITS Implementation has been done by Jasmer Singh Sanjotra.
+
+[*jasmer.sanjotra@gmail.com*](mailto:jasmer.sanjotra@gmail.com)
+
+------
+
+Original implementations are done by Amirhossein Kazerouni, Milad Soltany and Moein Heidari.
 
 [*amirhossein477@gmail.com*](mailto:amirhossein477@gmail.com)
 
@@ -60,14 +68,3 @@ All implementations are done by Amirhossein Kazerouni, Milad Soltany and Moein H
 
 [*moeinheidari7829@gmail.com*](mailto:moeinheidari7829@gmail.com)
 
-
-## Citation
-```python
-@inproceedings{heidari2023hiformer,
-  title={Hiformer: Hierarchical multi-scale representations using transformers for medical image segmentation},
-  author={Heidari, Moein and Kazerouni, Amirhossein and Soltany, Milad and Azad, Reza and Aghdam, Ehsan Khodapanah and Cohen-Adad, Julien and Merhof, Dorit},
-  booktitle={Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision},
-  pages={6202--6212},
-  year={2023}
-}
-```
