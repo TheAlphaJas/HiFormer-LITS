@@ -15,6 +15,7 @@ This code has been implemented in Python using Pytorch library and tested in ubu
 - Pytorch
 
 ## Prepare data, Train/Test
+[ALERT: THE FOLLOWING IS FROM THE ORIGINAL REPO. TO BE UPDATED SOON]
 Please go to ["Instructions.ipynb"](https://github.com/amirhossein-kz/HiFormer/blob/main/Instructions.ipynb) for complete detail on dataset preparation and Train/Test procedure or follow the instructions below. [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/amirhossein-kz//HiFormer/blob/main/Instructions.ipynb)
 
 
