@@ -152,18 +152,11 @@ def trainer(args, model, snapshot_path, X_train, Y_train, X_test, Y_test):
         
         # Test
         if (epoch_num + 1) % args.eval_interval == 0:
-            print("TESTING NOW!!!!")
+            print("SAVING MODEL NOW!!!!")
             filename = f'{args.model_name}_epoch_{epoch_num}.pth'
             save_mode_path = os.path.join(snapshot_path, filename)
             torch.save(model.state_dict(), save_mode_path)
             logging.info("save model to {}".format(save_mode_path))
-            
-            logging.info("*" * 20)
-            logging.info(f"Running Inference after epoch {epoch_num}")
-            print(f"Epoch {epoch_num}")
-            mean_dice, mean_hd95 = inference(model, testloader, args, test_save_path=test_save_path)
-            dice_.append(mean_dice)
-            hd95_.append(mean_hd95)
             model.train()
 
         if epoch_num >= max_epoch - 1:
@@ -173,17 +166,10 @@ def trainer(args, model, snapshot_path, X_train, Y_train, X_test, Y_test):
             logging.info("save model to {}".format(save_mode_path))
             
             if not (epoch_num + 1) % args.eval_interval == 0:
-                logging.info("*" * 20)
-                logging.info(f"Running Inference after epoch {epoch_num} (Last Epoch)")
-                print(f"Epoch {epoch_num}, Last Epcoh")
-                mean_dice, mean_hd95 = inference(model, testloader, args, test_save_path=test_save_path)
-                dice_.append(mean_dice)
-                hd95_.append(mean_hd95)
                 model.train()
                 
             iterator.close()
             break
             
-    plot_result(dice_,hd95_,snapshot_path,args)
     writer.close()
     return "Training Finished!"
