@@ -116,5 +116,6 @@ if __name__ == "__main__":
         for j in piclist:
             X_val.append(imgpath + "/" + j)
             Y_val.append(maskpath + "/liver/" +j)
-            
+    print(len(X_train))     
+    print("Train length above")
     trainer(args, model, args.output_dir, X_train, Y_train, X_test, Y_test)
