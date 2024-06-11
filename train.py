@@ -117,4 +117,4 @@ if __name__ == "__main__":
             X_val.append(imgpath + "/" + j)
             Y_val.append(maskpath + "/liver/" +j)
             
-    trainer(args, model, args.output_dir, XTest, YTest, XTrain, YTrain)
+    trainer(args, model, args.output_dir, XTrain, YTrain, XTest, YTest)
