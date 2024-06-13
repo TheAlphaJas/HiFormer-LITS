@@ -117,4 +117,4 @@ if __name__ == "__main__":
     print("Train length : ", len(X_train))
     print("Test length : ", len(X_test))
     print("Val length : ", len(X_val))
-    trainer(args, model, args.output_dir, X_test, Y_test, X_val, Y_val)
+    trainer(args, model, args.output_dir, X_train, Y_train, X_val, Y_val)

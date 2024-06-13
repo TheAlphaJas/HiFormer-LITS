@@ -602,7 +602,6 @@ def calculate_metric_percase(pred, gt):
 
 def test_single_volume(image, label, net, classes, patch_size=[256, 256]):
     image, label = image.squeeze(0).cpu().detach().numpy(), label.squeeze(0).cpu().detach().numpy()
-    print(image.shape)
     if len(image.shape) == 3:
         prediction = np.zeros_like(label)
         for ind in range(image.shape[0]):
