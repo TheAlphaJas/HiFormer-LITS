@@ -15,20 +15,19 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import datetime
 
-from datasets.dataset_synapse import RandomRotationTransform, LITSDataset
+from datasets.dataset_lits import RandomRotationTransform, LITSDataset
 
 
-def inference(model, testloader, args, test_save_path=None):
+def inference(model, testloader, args):
     model.eval()
     metric_list = 0.0
 
     for i_batch, sampled_batch in tqdm(enumerate(testloader)):
         h, w = sampled_batch["image"].size()[2:]
-        image, label, case_name = sampled_batch["image"], sampled_batch["label"], sampled_batch['case_name'][0]
-        metric_i = test_single_volume(image, label, model, classes=args.num_classes, patch_size=[args.img_size, args.img_size],
-                                      test_save_path=test_save_path, case=case_name, z_spacing=args.z_spacing)
+        image, label = sampled_batch["image"], sampled_batch["label"]
+        metric_i = test_single_volume(image, label, model, classes=args.num_classes, patch_size=[args.img_size, args.img_size])
         metric_list += np.array(metric_i)
-        logging.info(' idx %d case %s mean_dice %f mean_hd95 %f' % (i_batch, case_name, np.mean(metric_i, axis=0)[0], np.mean(metric_i, axis=0)[1]))
+        logging.info(' idx %d mean_dice %f mean_hd95 %f' % (i_batch, np.mean(metric_i, axis=0)[0], np.mean(metric_i, axis=0)[1]))
     
     metric_list = metric_list / len(testloader.dataset)
     
@@ -152,11 +151,17 @@ def trainer(args, model, snapshot_path, X_train, Y_train, X_test, Y_test):
         
         # Test
         if (epoch_num + 1) % args.eval_interval == 0:
-            print("SAVING MODEL NOW!!!!")
             filename = f'{args.model_name}_epoch_{epoch_num}.pth'
             save_mode_path = os.path.join(snapshot_path, filename)
             torch.save(model.state_dict(), save_mode_path)
             logging.info("save model to {}".format(save_mode_path))
+            
+            logging.info("*" * 20)
+            logging.info(f"Running Inference after epoch {epoch_num}")
+            print(f"Epoch {epoch_num}")
+            mean_dice, mean_hd95 = inference(model, testloader, args)
+            dice_.append(mean_dice)
+            hd95_.append(mean_hd95)
             model.train()
 
         if epoch_num >= max_epoch - 1:

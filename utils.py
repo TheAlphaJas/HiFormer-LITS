@@ -600,8 +600,9 @@ def calculate_metric_percase(pred, gt):
         return 0, 0
 
 
-def test_single_volume(image, label, net, classes, patch_size=[256, 256], test_save_path=None, case=None, z_spacing=1):
+def test_single_volume(image, label, net, classes, patch_size=[256, 256]):
     image, label = image.squeeze(0).cpu().detach().numpy(), label.squeeze(0).cpu().detach().numpy()
+    print(image.shape)
     if len(image.shape) == 3:
         prediction = np.zeros_like(label)
         for ind in range(image.shape[0]):
@@ -635,14 +636,9 @@ def test_single_volume(image, label, net, classes, patch_size=[256, 256], test_s
     for i in range(1, classes):
         metric_list.append(calculate_metric_percase(prediction == i, label == i))
 
-    if test_save_path is not None:
-        img_itk = sitk.GetImageFromArray(image.astype(np.float32))
-        prd_itk = sitk.GetImageFromArray(prediction.astype(np.float32))
-        lab_itk = sitk.GetImageFromArray(label.astype(np.float32))
-        img_itk.SetSpacing((1, 1, z_spacing))
-        prd_itk.SetSpacing((1, 1, z_spacing))
-        lab_itk.SetSpacing((1, 1, z_spacing))
-        sitk.WriteImage(prd_itk, test_save_path + '/'+case + "_pred.nii.gz")
-        sitk.WriteImage(img_itk, test_save_path + '/'+ case + "_img.nii.gz")
-        sitk.WriteImage(lab_itk, test_save_path + '/'+ case + "_gt.nii.gz")
     return metric_list
+
+def random_split_array(data, ratios=(0.8, 0.1, 0.1)):
+      np.random.shuffle(data)  # Shuffle for randomness
+      split_indices = np.cumsum(ratios[:-1]) * len(data)
+      return np.split(data, split_indices.astype(int))
