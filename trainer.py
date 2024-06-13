@@ -175,6 +175,7 @@ def trainer(args, model, snapshot_path, X_train, Y_train, X_test, Y_test):
                 
             iterator.close()
             break
-            
+        
+    plot_result(dice_,hd95_,snapshot_path,args)      
     writer.close()
     return "Training Finished!"
