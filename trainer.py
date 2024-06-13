@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import datetime
 
-from datasets.dataset_lits import RandomRotationTransform, LITSDataset
+from datasets.dataset_lits import RandomRotationTransform, LITSDataset, LITSTestDataset
 
 
 def inference(model, testloader, args):
@@ -79,7 +79,7 @@ def trainer(args, model, snapshot_path, X_train, Y_train, X_test, Y_test):
     num_classes = args.num_classes
     batch_size = args.batch_size * args.n_gpu
     db_train = LITSDataset(X_train,Y_train,transform=RandomRotationTransform(degrees=(0, 180)))    
-    db_test = LITSDataset(X_test,Y_test,transform=None)
+    db_test = LITSTestDataset(X_test,Y_test,transform=None)
     testloader = DataLoader(db_test, batch_size=1, shuffle=False, num_workers=1)
 
     print("The length of train set is: {}".format(len(db_train)))
