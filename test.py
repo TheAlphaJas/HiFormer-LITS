@@ -101,8 +101,12 @@ if __name__ == "__main__":
       original.append(i)
 
     train, test, val = random_split_array(original,(0.8,0.1,0.1))
+    print("SEED: ",args.seed)
+    print("Training Folders - ")
     print(train)
+    print("Testing Folders - ")
     print(test)
+    print("Validation Folders - ")
     print(val)
 
     X_train = []
