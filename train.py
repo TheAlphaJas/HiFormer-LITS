@@ -74,12 +74,13 @@ if __name__ == "__main__":
 
 
     model = HiFormer(config=CONFIGS[args.model_name], img_size=args.img_size, n_classes=args.num_classes).cuda()
+    
     def random_split_array(data, ratios=(0.8, 0.1, 0.1)):
       np.random.shuffle(data)  # Shuffle for randomness
       split_indices = np.cumsum(ratios[:-1]) * len(data)
       return np.split(data, split_indices.astype(int))
 
-#Train-test-val split
+
     original = []
     for i in range(131) :
       original.append(i)
@@ -88,7 +89,7 @@ if __name__ == "__main__":
     print(train)
     print(test)
     print(val)
-#These arrays will contain paths of images, and liver mask
+
     X_train = []
     Y_train = []
     X_test = []
